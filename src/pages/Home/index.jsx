@@ -98,7 +98,7 @@ const Home = () => {
       
       {type === "game" && data ? 
         (<GameDetails />) : 
-        (<GameList onNext={axiosNextPage} onPrevious={axiosPreviousPage} data={data} />)}      
+        (<GameList onNext={axiosNextPage} onPrevious={axiosPreviousPage} data={data} setPlatformId={setPlatformId}/>)}      
       
     </div>
   )

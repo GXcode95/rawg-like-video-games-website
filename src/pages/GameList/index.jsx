@@ -1,20 +1,26 @@
 import React from 'react'
 import ListNav from 'components/ListNav'
-const GameList = ({onNext, onPrevious, data}) => {
-    const [results, setResults] = React.useState()
+import GameCard from 'components/GameCard'
+const GameList = ({onNext, onPrevious, data, setPlatformId}) => {
+    const [games, setGames] = React.useState()
 
     React.useEffect(
       () => {
         if(data && data.results) {
-          setResults(data.results)
+          setGames(data.results)
         }
       },[data]
     )
 
+
+
   return (
     <div className='game-list'>
       <h1>gameList</h1>
-      {results && console.log("RESTULTS =====> ", results)}
+      {games && games.map(game => (
+        <GameCard game={game} key={game.id} setPlatformId={setPlatformId} />
+      ))}
+      {games && console.log("RESTULTS =====> ", games)}
       <ListNav onPrevious={onPrevious} onNext={onNext}/>
     </div>
   )
