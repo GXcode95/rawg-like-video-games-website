@@ -12,7 +12,7 @@ const GameCard = ({game, setPlatformId}) => {
       <div className="info">
         <p>platforms</p>
         <ul>
-          {game.parent_platforms.map(parent => (
+          {game.parent_platforms && game.parent_platforms.map(parent => (
             <li key={parent.platform.id}>
               <Link to="/games/" onClick={()=> {setPlatformId(parent.platform.id)}}>
                 {parent.platform.name}

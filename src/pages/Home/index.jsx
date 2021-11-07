@@ -10,7 +10,7 @@ const Home = () => {
   const key = ""
   const [data, setData] = React.useState() // the .data of the api response
   const [platforms, setPlatforms] = React.useState() // needed to fetch a platform from the slug instead of the id
-  const [platformId, setPlatformId] = React.useState("") //use to filter game by id
+  const [platformId, setPlatformId] = React.useState() //use to filter game by id
   const [apiUrl, setApiUrl] = React.useState() // avoid request the same url multipes times
   const navigate = useNavigate()
   let {type,search} = useParams()
@@ -33,7 +33,7 @@ const Home = () => {
       case "games": //request for gamelsit
         finalUrl += type + key 
         if(search) finalUrl += "&search=" + search + "&page_size=27"
-        if(platformId !== "") {
+        if(platformId) {
           finalUrl += "&parent_platforms=" + platformId
         }
       break;
@@ -67,16 +67,6 @@ const Home = () => {
       })
     }
   }
-  const handleSubmit = (e) => { // handle platformId and navigate to url base on input
-    e.preventDefault()
-    console.log("EVENT ==> ", e.target.querySelector('input').value)
-    let input = e.target.querySelector('input').value
-    console.log("EVENT ==> ", e.target.querySelector('select').value)
-    let select =  e.target.querySelector('select').value
-    setPlatformId(select)
-    navigate(`/games/${input}`) // select have 'games' as default value
-    //handleAxios()
-  }
   
   React.useState( // request and set the list of parent platforms
     ()=> {
@@ -96,7 +86,7 @@ const Home = () => {
 
   return (
     <div className='game-list'>
-      <Header onSubmit={handleSubmit} platforms={platforms}/>
+      <Header  platforms={platforms} platformId={platformId} setPlatformId={setPlatformId}/>
       
       {type === "game" && data ? 
         (<GameDetails game={data} />) : 
