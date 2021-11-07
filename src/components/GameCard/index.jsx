@@ -4,7 +4,11 @@ const GameCard = ({game, setPlatformId}) => {
 
   return (
     <div className='game-card'>
-      <h3>{game.name}</h3>
+      <h3>
+        <Link to={`/game/${game.id}`} >
+          {game.name}
+        </Link>
+      </h3>
       <div className="info">
         <p>platforms</p>
         <ul>
