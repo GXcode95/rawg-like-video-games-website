@@ -65,7 +65,7 @@ const Home = () => {
         })
       }
   }
-  const handleSubmit = (e) => {
+  const handleSubmit = (e) => { // handle platformId and navigate to url base on input
     e.preventDefault()
     console.log("EVENT ==> ", e.target.querySelector('input').value)
     let input = e.target.querySelector('input').value
@@ -76,14 +76,14 @@ const Home = () => {
     //handleAxios()
   }
   
-  React.useState( // fetch and set the list of parent platforms
+  React.useState( // request and set the list of parent platforms
     ()=> {
       Axios.get("https://api.rawg.io/api/platforms/lists/parents" + key)
       .then(response => setPlatforms(response.data.results))
       console.log("platforms requested")
     },[]
   )
-  React.useEffect(
+  React.useEffect( // Handle the request to set data
     ()=> {
       handleAxios()
     // eslint-disable-next-line react-hooks/exhaustive-deps
