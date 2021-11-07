@@ -8,9 +8,9 @@ import Header from 'components/Header'
 
 const Home = () => {
   const key = ""
-  const [data, setData] = React.useState()
-  const [platforms, setPlatforms] = React.useState()
-  const [platformId, setPlatformId] = React.useState("")
+  const [data, setData] = React.useState() // the .data of the api response
+  const [platforms, setPlatforms] = React.useState() // needed to fetch a platform from the slug instead of the id
+  const [platformId, setPlatformId] = React.useState("") //use to filter game by id
   const [apiUrl, setApiUrl] = React.useState() // avoid request the same url multipes times
   const navigate = useNavigate()
   let {type,search} = useParams()
@@ -25,45 +25,47 @@ const Home = () => {
     if (data.previous)
       Axios.get(data.previous).then(response =>setData(response.data))
   }
+
   const handleAxios = () => {// building the url to request, axios on it and setData
     let finalUrl = "https://api.rawg.io/api/"
-      switch (type){
-        case "games": //request for gamelsit
-          finalUrl += type + key 
-          if(search) finalUrl += "&search=" + search + "&page_size=27"
-          if(platformId !== "") {
-            finalUrl += "&parent_platforms=" + platformId
-          }
-        break;
-        case "game": //request for specific game
-          finalUrl += type +"s/" + search + key
-        break;
-        case undefined: // request for most wanted games
-          finalUrl += "games" + key + "&page_size=27"
-        break;
-        default: // request for gameList, with an additional param (genres, editor, developers...)
+
+    switch (type){
+      case "games": //request for gamelsit
+        finalUrl += type + key 
+        if(search) finalUrl += "&search=" + search + "&page_size=27"
+        if(platformId !== "") {
+          finalUrl += "&parent_platforms=" + platformId
+        }
+      break;
+      case "game": //request for specific game
+        finalUrl += type +"s/" + search + key
+      break;
+      case undefined: // request for most wanted games
+        finalUrl += "games" + key + "&page_size=27"
+      break;
+      default: // request for gameList, with an additional param (genres, editor, developers...)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        if(type === "platforms") {
           // eslint-disable-next-line react-hooks/exhaustive-deps
-          if(type === "platforms") {
+          type = "parent_platforms";
+          if (platforms){
+            let platform = platforms.filter( platform => platform.slug === search)
             // eslint-disable-next-line react-hooks/exhaustive-deps
-            type = "parent_platforms";
-            if (platforms){
-              let platform = platforms.filter( platform => platform.slug === search)
-              // eslint-disable-next-line react-hooks/exhaustive-deps
-              search = platform[0].id
-            } 
-          }
-          finalUrl += "games" + key + `&${type}=` + search + "&page_size=27"
-        break;
-      }
-      
-      if (!finalUrl.includes("undefined") && finalUrl !== apiUrl ) {
-        Axios.get(finalUrl).then(response => {
-          console.log("request the url:",finalUrl)
-          console.log("***** DATA *****", response.data)
-          setData(response.data)
-          setApiUrl(finalUrl)
-        })
-      }
+            search = platform[0].id
+          } 
+        }
+        finalUrl += "games" + key + `&${type}=` + search + "&page_size=27"
+      break;
+    }
+    
+    if (!finalUrl.includes("undefined") && finalUrl !== apiUrl ) {
+      Axios.get(finalUrl).then(response => {
+        console.log("request the url:",finalUrl)
+        console.log("***** DATA *****", response.data)
+        setData(response.data)
+        setApiUrl(finalUrl)
+      })
+    }
   }
   const handleSubmit = (e) => { // handle platformId and navigate to url base on input
     e.preventDefault()
@@ -97,7 +99,7 @@ const Home = () => {
       <Header onSubmit={handleSubmit} platforms={platforms}/>
       
       {type === "game" && data ? 
-        (<GameDetails />) : 
+        (<GameDetails game={data} />) : 
         (<GameList onNext={axiosNextPage} onPrevious={axiosPreviousPage} data={data} setPlatformId={setPlatformId}/>)}      
       
     </div>
