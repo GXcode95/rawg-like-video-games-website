@@ -4,7 +4,7 @@ const GameDetails = () => {
 
   return (
     <div className='game-details'>
-      
+      <h1>Game Details</h1>      
     </div>
   )
 }
